@@ -13,7 +13,7 @@ public class CueManager : MonoBehaviour
     private Renderer overlayRenderer;
     private Renderer outlineRenderer;
 
-    private string currentDesign = "none";
+    private string currentDesign = "outline";
     private Vector3 outlineVelocity;
     private Vector3 overlayVelocity;
 
