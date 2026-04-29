@@ -13,7 +13,7 @@ public class CueManager : MonoBehaviour
     private Renderer overlayRenderer;
     private Renderer outlineRenderer;
 
-    private string currentDesign = "outline";
+    private string currentDesign = "none";
     private Vector3 outlineVelocity;
     private Vector3 overlayVelocity;
 
@@ -22,7 +22,8 @@ public class CueManager : MonoBehaviour
         if (overlayCue) overlayRenderer = overlayCue.GetComponent<Renderer>();
         if (outlineCue) outlineRenderer = outlineCue.GetComponent<Renderer>();
 
-        SetDesign("none");
+        SetDesign("outline");
+        SetVisibility(true);
     }
 
     public void ApplyDesign(DesignMessage design)

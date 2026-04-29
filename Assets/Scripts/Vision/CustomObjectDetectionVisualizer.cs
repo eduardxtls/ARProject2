@@ -162,7 +162,7 @@ public class CustomObjectDetectionVisualizer : MonoBehaviour
                 // If a target label is specified, check if the current box's label matches it
                 if (!string.IsNullOrEmpty(targetLabel) && targetLabel != "none")
                 {
-                    if (b.label.Trim().ToLower() == targetLabel)
+                    if (b.label.Contains("keyboard"))
                     {
                         cueManager.UpdateCueTransform(pos, rot, scl); // Update our custom cue
                         cueManager.SetVisibility(true);
@@ -170,26 +170,23 @@ public class CustomObjectDetectionVisualizer : MonoBehaviour
                     }
                 }
 
-                if (showAllBoxes && boundingBoxPrefab != null)
-                {
-                    var quad = _pool.Count > 0 ? _pool.Dequeue() : Instantiate(boundingBoxPrefab);
-                    quad.SetActive(true);
-                    quad.transform.SetPositionAndRotation(pos, rot);
-                    quad.transform.localScale = scl;
-                    _live.Add(quad);
+                var quad = _pool.Count > 0 ? _pool.Dequeue() : Instantiate(boundingBoxPrefab);
+                quad.SetActive(true);
+                quad.transform.SetPositionAndRotation(pos, rot);
+                quad.transform.localScale = scl;
+                _live.Add(quad);
 
-                    var labelText = quad.GetComponentInChildren<Text>();
-                    labelText.text = b.label;
+                var labelText = quad.GetComponentInChildren<Text>();
+                labelText.text = b.label;
 
-                    var avgScale = (scl.x + scl.y + scl.z) / 3f;
-                    var uniformScale = avgScale * labelScale;
+                var avgScale = (scl.x + scl.y + scl.z) / 3f;
+                var uniformScale = avgScale * labelScale;
 
-                    labelText.transform.localScale = new Vector3(
-                        uniformScale / Mathf.Max(scl.x, 0.001f),
-                        uniformScale / Mathf.Max(scl.y, 0.001f),
-                        uniformScale / Mathf.Max(scl.z, 0.001f)
-                    );
-                }
+                labelText.transform.localScale = new Vector3(
+                    uniformScale / Mathf.Max(scl.x, 0.001f),
+                    uniformScale / Mathf.Max(scl.y, 0.001f),
+                    uniformScale / Mathf.Max(scl.z, 0.001f)
+                );
 
                 // Hide cue if no match in current frame
                 if (!matchFound)
