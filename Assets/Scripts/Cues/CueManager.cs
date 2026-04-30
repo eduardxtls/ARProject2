@@ -14,8 +14,8 @@ public class CueManager : MonoBehaviour
     private Renderer outlineRenderer;
 
     private string currentDesign = "none";
-    private Vector3 outlineVelocity;
-    private Vector3 overlayVelocity;
+    private Vector3 outlineVelocity = Vector3.zero;
+    private Vector3 overlayVelocity = Vector3.zero;
 
     private void Awake()
     {
@@ -38,15 +38,25 @@ public class CueManager : MonoBehaviour
         }
     }
 
-    public void UpdateCueTransform(Vector3 position, Quaternion rotation, float scale)
+    public void UpdateCueTransform(Vector3 position, Quaternion rotation, Vector3 scale)
     {
-        outlineCue.transform.position = Vector3.SmoothDamp(outlineCue.transform.position, position, ref outlineVelocity, outlineSmooth);
+        outlineCue.transform.position = Vector3.SmoothDamp(
+            outlineCue.transform.position,
+            position,
+            ref outlineVelocity,
+            outlineSmooth
+        );
         outlineCue.transform.rotation = rotation;
-        outlineCue.transform.localScale = Vector3.one * scale;
+        outlineCue.transform.localScale = scale;
 
-        overlayCue.transform.position = Vector3.SmoothDamp(overlayCue.transform.position, position, ref overlayVelocity, overlaySmooth);
+        overlayCue.transform.position = Vector3.SmoothDamp(
+            overlayCue.transform.position,
+            position,
+            ref overlayVelocity,
+            overlaySmooth
+        );
         overlayCue.transform.rotation = rotation;
-        overlayCue.transform.localScale = Vector3.one * scale;
+        overlayCue.transform.localScale = scale;
     }
 
     public void SetVisibility(bool visible)
@@ -88,8 +98,8 @@ public class CueManager : MonoBehaviour
         if (UnityEngine.ColorUtility.TryParseHtmlString(color, out Color newColor))
         {
             newColor.a = outlineRenderer.material.color.a; // Preserve current alpha - same for both cues
-            outlineCue.GetComponent<Renderer>().material.color = newColor;
-            overlayCue.GetComponent<Renderer>().material.color = newColor;
+            outlineRenderer.material.color = newColor;
+            overlayRenderer.material.color = newColor;
             Debug.Log("Design Change - Color: " + color);
         }
         else

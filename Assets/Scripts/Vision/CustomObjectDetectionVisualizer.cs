@@ -24,6 +24,7 @@ using Unity.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using Meta.XR.BuildingBlocks.AIBlocks;
+using Meta.XR;
 
 public class CustomObjectDetectionVisualizer : MonoBehaviour
 {
@@ -33,12 +34,12 @@ public class CustomObjectDetectionVisualizer : MonoBehaviour
     [SerializeField] private GameObject boundingBoxPrefab;
 
     [Tooltip("Enable or disable bounding box visualization")]
-    [SerializeField] private bool showBoundingBoxes = true;
+    [SerializeField] private bool showAllDetections = true;
 
     private ObjectDetectionAgent _agent;
     private readonly List<GameObject> _live = new();
     private readonly Queue<GameObject> _pool = new();
-#if MRUK_INSTALLED
+//#if MRUK_INSTALLED
         [Tooltip("Scale factor for text labels relative to bounding box size")]
         [Range(0f, 1f)]
         [SerializeField] private float labelScale = 0.5f;
@@ -57,19 +58,19 @@ public class CustomObjectDetectionVisualizer : MonoBehaviour
         }
 
         private FrameData _frame;
-#endif
+//#endif
 
     private void Awake()
     {
         _agent = GetComponent<ObjectDetectionAgent>();
-#if MRUK_INSTALLED
+//#if MRUK_INSTALLED
             _cam = FindAnyObjectByType<PassthroughCameraAccess>();
             _depth = GetComponent<DepthTextureAccess>();
             _eyeIdx = _cam.CameraPosition == PassthroughCameraAccess.CameraPositionType.Left ? 0 : 1;
-#endif
+//#endif
     }
 
-#if MRUK_INSTALLED
+//#if MRUK_INSTALLED
         private void OnEnable()
         {
             _agent.OnBoxesUpdated += HandleBatch;
@@ -111,11 +112,11 @@ public class CustomObjectDetectionVisualizer : MonoBehaviour
             System.Array.Copy(d.ViewProjectionMatrix, _vpBuf, d.ViewProjectionMatrix.Length);
             _frame.ViewProjectionMatrix = _vpBuf;
         }
-#endif
+//#endif
 
     private void HandleBatch(List<BoxData> batch)
     {
-        if (!showBoundingBoxes)
+        if (!showAllDetections)
         {
             ClearAll();
             return;
@@ -129,7 +130,7 @@ public class CustomObjectDetectionVisualizer : MonoBehaviour
 
         _live.Clear();
 
-#if MRUK_INSTALLED
+//#if MRUK_INSTALLED
             // Check for bounding box prefab
             if (!boundingBoxPrefab)
             {
@@ -162,7 +163,7 @@ public class CustomObjectDetectionVisualizer : MonoBehaviour
                 // If a target label is specified, check if the current box's label matches it
                 if (!string.IsNullOrEmpty(targetLabel) && targetLabel != "none")
                 {
-                    if (b.label.Contains("keyboard"))
+                    if (b.label.Contains(targetLabel))
                     {
                         cueManager.UpdateCueTransform(pos, rot, scl); // Update our custom cue
                         cueManager.SetVisibility(true);
@@ -194,10 +195,10 @@ public class CustomObjectDetectionVisualizer : MonoBehaviour
                     cueManager.SetVisibility(false);
                 }
             }
-#endif
+//#endif
     }
 
-#if MRUK_INSTALLED
+//#if MRUK_INSTALLED
         public bool TryProject(float xmin, float ymin, float xmax, float ymax,
             out Vector3 world, out Quaternion rot, out Vector3 scale)
         {
@@ -277,7 +278,7 @@ public class CustomObjectDetectionVisualizer : MonoBehaviour
 
             return true;
     }
-#endif
+// #endif
 
     private void ClearAll()
     {

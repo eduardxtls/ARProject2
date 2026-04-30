@@ -60,7 +60,7 @@ public class ObjectDetector : MonoBehaviour
 
             if (cueManager != null)
             {
-                cueManager.UpdateCueTransform(targetPosition, Quaternion.identity, 1f);
+                cueManager.UpdateCueTransform(targetPosition, Quaternion.identity, Vector3.one);
             }
         }
     }
